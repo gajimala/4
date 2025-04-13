@@ -93,7 +93,7 @@
       document.getElementById('naverBtn').addEventListener('click', function() {
         if (kakaoMap) {
           kakaoMap = false;
-          map.destroy();
+          map = null; // 기존 지도 객체 초기화
           createNaverMap();
         }
       });
@@ -101,7 +101,7 @@
       document.getElementById('kakaoBtn').addEventListener('click', function() {
         if (!kakaoMap) {
           kakaoMap = true;
-          map.destroy();
+          map = null; // 기존 지도 객체 초기화
           createKakaoMap();
         }
       });

@@ -9,7 +9,8 @@
       height: 100vh;
     }
   </style>
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d02572eca2dd38bbbbb6692254d51bb7&libraries=clusterer"></script>
+  <script type="text/javascript" 
+    src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d6a2b5d4c0670a5a8e213f7fa63a5e67&libraries=clusterer"></script>
 </head>
 <body>
   <div id="map"></div>
@@ -33,21 +34,18 @@
             position: new kakao.maps.LatLng(point.latitude, point.longitude)
           });
 
-          const infoWindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;font-size:14px">${point.name || '인명구조함'}</div>`
+          const infowindow = new kakao.maps.InfoWindow({
+            content: `<div style="padding:5px;font-size:14px;">${point.name || '인명구조함'}</div>`
           });
 
-          kakao.maps.event.addListener(marker, 'click', function () {
-            infoWindow.open(map, marker);
+          kakao.maps.event.addListener(marker, 'click', () => {
+            infowindow.open(map, marker);
           });
 
           return marker;
         });
 
         clusterer.addMarkers(markers);
-      })
-      .catch(error => {
-        console.error('API 호출 실패:', error);
       });
   </script>
 </body>

@@ -12,7 +12,7 @@ with open(DATA_PATH, "r", encoding="utf-8") as f:
 
 @app.get("/")
 def read_root():
-return {"message": "Welcome to the Gangneung Lifesaver API. Visit /docs for API documentation."}
+    return {"message": "Welcome to the Gangneung Lifesaver API. Visit /docs for API documentation."}
 
 @app.get("/lifesavers")
 def get_lifesavers(

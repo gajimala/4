@@ -19,9 +19,10 @@
         const mapContainer = document.getElementById('map');
         const mapOption = {
           center: new kakao.maps.LatLng(37.75, 128.9), // 강릉 중심 좌표
-          level: 8
+          level: 8 // 줌 레벨
         };
 
+        // 지도 생성
         const map = new kakao.maps.Map(mapContainer, mapOption);
         const clusterer = new kakao.maps.MarkerClusterer({
           map: map,
@@ -29,6 +30,7 @@
           minLevel: 10
         });
 
+        // 인명구조함 데이터 가져오기
         fetchLifesaverData(clusterer, map);
       }
 
@@ -47,7 +49,7 @@
               });
 
               // 마커 클릭 시 인포윈도우 열기
-              kakao.maps.event.addListener(marker, 'click', () => {
+              kakao.maps.event.addListener(marker, 'click', function() {
                 infowindow.open(map, marker);
               });
 

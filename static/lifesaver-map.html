@@ -4,35 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gangneung Lifesaver Map</title>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=q5smdu0gl4"></script>
+    <!-- Naver Maps API -->
+    <script type="text/javascript" src="https://openapi.naver.com/openapi/maps.js?clientId=q5smdu0gl4"></script>
+    <style>
+        #map { width: 100%; height: 500px; }
+    </style>
 </head>
 <body>
-    <div id="map" style="width:100%; height:500px;"></div>
+    <h1>Gangneung Lifesaver Locations</h1>
+    <div id="map"></div>
+
     <script>
-        const map = new naver.maps.Map('map', {
-            center: new naver.maps.LatLng(37.62744522, 129.0491638),
-            zoom: 11
-        });
+        // 지도 초기화 함수
+        function initMap() {
+            // 지도 생성
+            var map = new naver.maps.Map('map', {
+                center: new naver.maps.LatLng(37.8229, 128.8762), // 초기 중심 좌표 (예시: Gangneung)
+                zoom: 10
+            });
 
-        fetch('https://gangneung-lifesaver-api-vcj2.onrender.com/lifesavers')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(item => {
-                    const marker = new naver.maps.Marker({
-                        position: new naver.maps.LatLng(item.latitude, item.longitude),
-                        map: map
-                    });
+            // 예시로 몇 개의 위치 데이터를 표시
+            var lifesaverLocations = [
+                { lat: 37.8229, lng: 128.8762, title: 'Lifesaver 1' },
+                { lat: 37.8211, lng: 128.8802, title: 'Lifesaver 2' },
+                { lat: 37.8194, lng: 128.8851, title: 'Lifesaver 3' }
+            ];
 
-                    const infoWindow = new naver.maps.InfoWindow({
-                        content: `<div><strong>${item.address}</strong><br>${item.desc}</div>`
-                    });
-
-                    naver.maps.Event.addListener(marker, 'click', () => {
-                        infoWindow.open(map, marker);
-                    });
+            // 위치 표시
+            lifesaverLocations.forEach(function(location) {
+                new naver.maps.Marker({
+                    position: new naver.maps.LatLng(location.lat, location.lng),
+                    map: map,
+                    title: location.title
                 });
-            })
-            .catch(err => console.log("데이터 불러오기 실패:", err));
+            });
+        }
+
+        // 지도 초기화 함수 호출
+        initMap();
     </script>
 </body>
 </html>

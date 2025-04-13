@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware  # CORS 미들웨어 임포트
+from fastapi.responses import FileResponse  # FileResponse 임포트 추가
 from typing import Optional
 import json
 import os

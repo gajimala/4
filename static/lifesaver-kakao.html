@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>강릉 인명구조함 지도</title>
+  <style>
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d02572eca2dd38bbbbb6692254d51bb7&libraries=clusterer"></script>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    const map = new kakao.maps.Map(document.getElementById('map'), {
+      center: new kakao.maps.LatLng(37.75, 128.9),
+      level: 8
+    });
+
+    const clusterer = new kakao.maps.MarkerClusterer({
+      map: map,
+      averageCenter: true,
+      minLevel: 10
+    });
+
+    fetch("https://gangneung-lifesaver-api-vcj2.onrender.com/lifesavers")
+      .then(res => res.json())
+      .then(data => {
+        const markers = data.map(point => {
+          const marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(point.latitude, point.longitude)
+          });
+
+          const infoWindow = new kakao.maps.InfoWindow({
+            content: `<div style="padding:5px;font-size:14px">${point.name || '인명구조함'}</div>`
+          });
+
+          kakao.maps.event.addListener(marker, 'click', function () {
+            infoWindow.open(map, marker);
+          });
+
+          return marker;
+        });
+
+        clusterer.addMarkers(markers);
+      })
+      .catch(error => {
+        console.error('API 호출 실패:', error);
+      });
+  </script>
+</body>
+</html>

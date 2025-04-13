@@ -10,6 +10,10 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "gangneung_filtered_by_lat.j
 with open(DATA_PATH, "r", encoding="utf-8") as f:
     lifesavers = json.load(f)
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Gangneung Lifesaver API. Visit /docs for API documentation."}
+
 @app.get("/lifesavers")
 def get_lifesavers(
     address: Optional[str] = Query(None, description="주소에 포함된 텍스트 검색"),

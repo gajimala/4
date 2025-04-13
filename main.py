@@ -7,7 +7,7 @@ import os
 # FastAPI 앱 생성
 app = FastAPI(title="Gangneung Lifesaver API")
 
-# CORS 설정
+# CORS 설정 (모든 도메인에서 요청을 허용)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 모든 도메인에서 요청을 허용
@@ -34,10 +34,28 @@ def get_lifesavers(
     pol_nm: Optional[str] = Query(None, description="관할 파출소명 검색")
 ):
     results = lifesavers  # 전체 데이터
+    
+    # 필터링 조건
     if address:
-        results = [item for item in results if address in str(item.get("address", ""))]
+        results = [item for item in results if address.lower() in str(item.get("address", "")).lower()]
     if desc:
-        results = [item for item in results if desc in str(item.get("desc", ""))]
+        results = [item for item in results if desc.lower() in str(item.get("desc", "")).lower()]
     if pol_nm:
-        results = [item for item in results if pol_nm in str(item.get("pol_nm", ""))]
+        results = [item for item in results if pol_nm.lower() in str(item.get("pol_nm", "")).lower()]
+
+    # 결과가 없을 때 메시지 반환
+    if not results:
+        return {"message": "No results found matching the search criteria."}
+    
     return results
+
+# /static 엔드포인트 (HTML 파일 제공)
+@app.get("/static/lifesaver-map.html")
+async def get_html():
+    file_path = "static/lifesaver-map.html"
+    
+    # HTML 파일이 존재하면 반환
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    else:
+        return {"error": "HTML file not found"}

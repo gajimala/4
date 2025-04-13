@@ -14,43 +14,54 @@
   <body>
     <div id="map"></div>
     <script>
-      const mapContainer = document.getElementById('map');
-      const mapOption = {
-        center: new kakao.maps.LatLng(37.75, 128.9), // 강릉 중심 좌표
-        level: 8 // 줌 레벨
-      };
+      // 지도 초기화 함수
+      function initializeMap() {
+        const mapContainer = document.getElementById('map');
+        const mapOption = {
+          center: new kakao.maps.LatLng(37.75, 128.9), // 강릉 중심 좌표
+          level: 8
+        };
 
-      // 카카오 지도 생성
-      const map = new kakao.maps.Map(mapContainer, mapOption);
-      const clusterer = new kakao.maps.MarkerClusterer({
-        map: map,
-        averageCenter: true,
-        minLevel: 10
-      });
+        const map = new kakao.maps.Map(mapContainer, mapOption);
+        const clusterer = new kakao.maps.MarkerClusterer({
+          map: map,
+          averageCenter: true,
+          minLevel: 10
+        });
 
-      // 인명구조함 데이터 가져오기
-      fetch("https://gangneung-lifesaver-api-vcj2.onrender.com/lifesavers")
-        .then(res => res.json())
-        .then(data => {
-          const markers = data.map(point => {
-            const marker = new kakao.maps.Marker({
-              position: new kakao.maps.LatLng(point.latitude, point.longitude)
+        fetchLifesaverData(clusterer, map);
+      }
+
+      // 인명구조함 데이터를 가져와서 마커로 표시하는 함수
+      function fetchLifesaverData(clusterer, map) {
+        fetch("https://gangneung-lifesaver-api-vcj2.onrender.com/lifesavers")
+          .then(res => res.json())
+          .then(data => {
+            const markers = data.map(point => {
+              const marker = new kakao.maps.Marker({
+                position: new kakao.maps.LatLng(point.latitude, point.longitude)
+              });
+
+              const infowindow = new kakao.maps.InfoWindow({
+                content: `<div style="padding:5px;font-size:14px">${point.name || '인명구조함'}</div>`
+              });
+
+              // 마커 클릭 시 인포윈도우 열기
+              kakao.maps.event.addListener(marker, 'click', () => {
+                infowindow.open(map, marker);
+              });
+
+              return marker;
             });
 
-            const infowindow = new kakao.maps.InfoWindow({
-              content: `<div style="padding:5px;font-size:14px">${point.name || '인명구조함'}</div>`
-            });
+            // 마커 클러스터러에 마커 추가
+            clusterer.addMarkers(markers);
+          })
+          .catch(error => console.error('Error loading lifesavers:', error));
+      }
 
-            kakao.maps.event.addListener(marker, 'click', () => {
-              infowindow.open(map, marker);
-            });
-
-            return marker;
-          });
-
-          clusterer.addMarkers(markers); // 클러스터에 마커 추가
-        })
-        .catch(error => console.error('Error loading lifesavers:', error));
+      // 페이지가 로드되면 지도 초기화 함수 실행
+      window.onload = initializeMap;
     </script>
   </body>
 </html>
